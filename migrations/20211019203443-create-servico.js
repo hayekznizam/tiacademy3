@@ -6,28 +6,26 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
-      firstName: {
-        type: Sequelize.STRING
+      nome: {
+        type: Sequelize.STRING,
       },
-      lastName: {
-        type: Sequelize.STRING
+      descricao: {
+        type: Sequelize.STRING,
       },
-      email: {
-        type: Sequelize.STRING
-      },
+
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Servicos');
-  }
+  },
 };

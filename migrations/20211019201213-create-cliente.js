@@ -6,28 +6,37 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
-      firstName: {
-        type: Sequelize.STRING
+      nome: {
+        type: Sequelize.STRING,
       },
-      lastName: {
-        type: Sequelize.STRING
+      endereco: {
+        type: Sequelize.STRING,
       },
-      email: {
-        type: Sequelize.STRING
+      cidade: {
+        type: Sequelize.STRING,
+      },
+      uf: {
+        type: Sequelize.STRING,
+      },
+      nascimento: {
+        type: Sequelize.DATEONLY,
+      },
+      clienteDesde: {
+        type: Sequelize.DATEONLY,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Clientes');
-  }
+  },
 };

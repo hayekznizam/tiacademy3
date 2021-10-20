@@ -2,32 +2,47 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('ItemPedidos', {
-      id: {
+      //Item Pedidos não possui id, é identificado por pedidos e servicos
+      PedidoId: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'pedidos',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
-      firstName: {
-        type: Sequelize.STRING
+      ServicoId: {
+        allowNull: false,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'servicos',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
-      lastName: {
-        type: Sequelize.STRING
+      quantidade: {
+        type: Sequelize.INTEGER,
       },
-      email: {
-        type: Sequelize.STRING
+      valor: {
+        type: Sequelize.FLOAT,
       },
+
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('ItemPedidos');
-  }
+  },
 };
