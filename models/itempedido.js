@@ -8,7 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // é a individualizacao do item, conversa com pedido e a servico
+      ItemPedido.belongsTo(models.Pedido);
+      ItemPedido.belongsTo(models.Servico);
     }
   }
   ItemPedido.init(

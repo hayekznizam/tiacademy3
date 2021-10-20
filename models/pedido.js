@@ -8,7 +8,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // um pedido tem um cliente pertence a um cliente o pedido
+      Pedido.belongsTo(models.Cliente);
+      //servico pertence a classe item pedido
+      Pedido.belongsToMany(models.Servico, {
+        through: 'ItemPedido',
+      });
     }
   }
   Pedido.init(
