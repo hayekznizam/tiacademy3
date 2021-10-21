@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       uf: DataTypes.STRING,
       cidade: DataTypes.STRING,
       nascimento: DataTypes.STRING,
-      cidade: DataTypes.DATEONLY,
       clienteDesde: DataTypes.DATEONLY,
     },
     {
