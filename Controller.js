@@ -6,6 +6,9 @@ const models = require('./models');
 const app = express();
 app.use(cors());
 
+//rota no formato json
+app.use(express.json());
+
 //cliente chamando a Classe Cliente
 let cliente = models.Cliente;
 let itempedido = models.ItemPedido;
@@ -32,24 +35,39 @@ app.get('/clientes', async (req, res) => {
 });
 //criando para passar as informações
 //definindo rota, com resposta, espera, com nome,descricao e data de inclusao e atualizacao
-app.get('/servicos', async (req, res) => {
-  await servico.create({
-    nome: 'Nodejs',
-    descricao: 'Desenvolvimento de aplicação back-end',
-    createAt: new Date(),
-    updateAt: new Date(),
-  });
-  res.send('Serviço criado com sucesso');
+app.post('/servicos', async (req, res) => {
+  await servico
+    .create(
+      req.body)
+    .then(function () {
+      return res.json({
+        error: false,
+        message: 'Serviço criado com sucesso',
+      });
+    })
+    .catch(function (erro) {
+      return res.status(400).json({
+        error: true,
+        message: 'Foi impossível se conectar!',
+      });
+    });
 });
 
 app.get('/pedidos', async (req, res) => {
   await pedido.create({
-    id: '3',
-    dataPedido: '2021-10-21',
-    createAt: new Date(),
-    updateAt: new Date(),
+    ClienteId: 3,
+    data: '2021-10-21',
   });
   res.send('Pedido criado com sucesso.');
+});
+
+app.get('itenspedido', async (req, res) => {
+  await itempedido.create({
+    PedidoId: 1,
+    ServicoId: 2,
+    quantidade: 3,
+    valor: 100.0,
+  });
 });
 
 let port = process.env.PORT || 3001;
