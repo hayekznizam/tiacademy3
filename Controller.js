@@ -22,23 +22,27 @@ app.get('/', function (req, res) {
 });
 //passando as informações pode dentro da aplicacao
 
-app.get('/clientes', async (req, res) => {
-  await cliente.create({
-    nome: 'Vinícius Andrei',
-    endereco: 'Rua Romário Martins',
-    cidade: 'Maringá',
-    uf: 'PR',
-    nascimento: '1999-10-30',
-    clienteDesde: '2021-10-21',
-  });
-  res.send('Cliente Adicionado com sucesso');
+app.post('/clientes', async (req, res) => {
+  await cliente
+    .create(req.body)
+    .then(function () {
+      return res.json({
+        error: false,
+        message: 'Cliente criado com sucesso',
+      });
+    })
+    .catch(function (erro) {
+      return res.status(400).json({
+        error: true,
+        message: 'Foi impossível se conectar!',
+      });
+    });
 });
 //criando para passar as informações
 //definindo rota, com resposta, espera, com nome,descricao e data de inclusao e atualizacao
 app.post('/servicos', async (req, res) => {
   await servico
-    .create(
-      req.body)
+    .create(req.body)
     .then(function () {
       return res.json({
         error: false,
@@ -53,24 +57,53 @@ app.post('/servicos', async (req, res) => {
     });
 });
 
-app.get('/pedidos', async (req, res) => {
-  await pedido.create({
-    ClienteId: 3,
-    data: '2021-10-21',
-  });
-  res.send('Pedido criado com sucesso.');
+app.post('/pedidos', async (req, res) => {
+  await pedido
+    .create(req.body)
+    .then(function () {
+      return res.json({
+        error: false,
+        message: 'Pedido Criado com sucesso!!',
+      });
+    })
+    .catch(function (erro) {
+      return res.status(400).json({
+        error: true,
+        message: 'Foi impossível se conectar.',
+      });
+    });
 });
 
-app.get('itenspedido', async (req, res) => {
-  await itempedido.create({
-    PedidoId: 1,
-    ServicoId: 2,
-    quantidade: 3,
-    valor: 100.0,
-  });
+app.post('itenspedido', async (req, res) => {
+  await itempedido
+    .create(req.body)
+    .then(function () {
+      return res.json({
+        error: false,
+        message: 'Item criado com sucesso!',
+      });
+    })
+    .catch(function (erro) {
+      return res.status(400).json({
+        error: true,
+        message: 'Foi impossível se conectar.',
+      });
+    });
 });
 
 let port = process.env.PORT || 3001;
+
+//criando consultas
+app.get('/listaservicos', async (req, res) => {
+  await servico
+    .findAll({
+      raw: true,
+    })
+    .then(function (servicos) {
+      //formata que vai retornar
+      res.json({ servicos });
+    });
+});
 
 //app está ouvindo a porta de requisicao e resposta
 //utilizando tambem uma arrow function e com msg na tela
