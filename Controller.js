@@ -93,15 +93,48 @@ app.post('itenspedido', async (req, res) => {
 
 let port = process.env.PORT || 3001;
 
-//criando consultas
+//criando consultas retornando todos os valores
+// app.get('/listaservicos', async (req, res) => {
+//   await servico
+//     .findAll({
+//       raw: true,
+//     })
+//     .then(function (servicos) {
+//       //formata que vai retornar
+//       res.json({ servicos });
+//     });
+// });
+//retornando em ordem
 app.get('/listaservicos', async (req, res) => {
   await servico
     .findAll({
-      raw: true,
+      //raw: true,
+      order: [['nome', 'DESC']],
     })
     .then(function (servicos) {
       //formata que vai retornar
       res.json({ servicos });
+    });
+});
+//retorna quantidade de id
+app.get('/ofertaservicos', async (req, res) => {
+  await servico.count('id').then(function (servicos) {
+    res.json({ servicos });
+  });
+});
+
+app.get('/servico/:id', async (req, res) => {
+  await servico.findByPK(req.params.id).then(serv => {
+      return res.json({
+        error: false,
+        serv,
+      });
+    })
+    .catch(function (erro) {
+      return res.status(400).json({
+        error: true,
+        message: 'Erro: código não encontrado!',
+      });
     });
 });
 
