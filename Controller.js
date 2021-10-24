@@ -40,6 +40,141 @@ app.post('/clientes', async (req, res) => {
       });
     });
 });
+
+//cadastrando cliente
+app.post('/clientes/cadastrar', async(req, res) => {
+  await cliente.create(
+      req.body        
+  ).then(function() {
+      return res.json({
+          error: false,
+          message: "Cliente criado com sucesso!"
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao criar o cliente."
+      })
+  });
+});
+
+app.get('/clientes/quantidade', async(req, res) => {
+  await cliente.count('id')
+  .then(function(clientes) {
+      res.json({
+          error: false,
+          clientes
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao retornar a quantidade de clientes."
+      });
+  });
+});
+
+app.get('/clientes/:id', async(req, res) => {
+  if(!await cliente.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Cliente não encontrado."
+      });
+  };
+
+  await cliente.findByPk(req.params.id, {include: [{all: true}]})
+  .then(cli => {
+      return res.json({
+          error: false,
+          cli
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao buscar o cliente."
+      });
+  });
+});
+
+app.get('/clientes/:id/pedidos', async(req, res) => {
+  if(!await cliente.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Cliente não encontrado."
+      });
+  };
+
+  await pedido.findAll({
+      where: {ClienteId: req.params.id} 
+  }).then(function(peds) {
+      return res.json({
+          error: false,            
+          peds
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao encontrar pedidos."
+      });
+  });
+});
+
+app.put('/clientes/:id/editar', async(req, res) => {
+  if(!await cliente.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Cliente não encontrado."
+      });
+  };
+
+  const cli = {
+      nome: req.body.nome,
+      endereco: req.body.endereco,
+      cidade: req.body.cidade,
+      uf: req.body.uf,
+      nascimento: req.body.nascimento,
+      clienteDesde: req.body.clienteDesde
+  };
+
+  await cliente.update(cli, {
+      where: {id: req.params.id}
+  }).then(function() {
+      return res.json({
+          error: false,
+          message: "Cliente alterado com sucesso!"
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao alterar o cliente."
+      });
+  });
+});
+
+app.get('/clientes/:id/excluir', async(req, res) => {
+  if(!await cliente.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Cliente não encontrado."
+      });
+  };
+
+  await cliente.destroy({
+      where: {id: req.params.id}
+  }).then(function() {
+      return res.json({
+          error: false,
+          message: "Cliente excluído com sucesso!"
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao excluir o cliente."
+      });
+  });
+});
+
+
+
 //criando para passar as informações
 //definindo rota, com resposta, espera, com nome,descricao e data de inclusao e atualizacao
 app.post('/servicos', async (req, res) => {
@@ -59,6 +194,140 @@ app.post('/servicos', async (req, res) => {
     });
 });
 
+//cadastro serviços 
+
+app.post('/servicos/cadastrar', async(req, res) => {
+  await servico.create(
+      req.body        
+  ).then(function() {
+      return res.json({
+          error: false,
+          message: "Serviço criado com sucesso!"
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao criar o serviço."
+      })
+  });    
+});
+
+app.get('/servicos/:id', async(req, res) => {
+  if(!await servico.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Serviço não encontrado."
+      });
+  };
+
+  await servico.findByPk(req.params.id)
+  .then(serv => {
+      return res.json({
+          error: false,
+          serv
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao buscar o serviço."
+      });
+  });
+});
+
+
+app.get('/servicos/quantidade', async(req, res) => {
+  await servico.count('id')
+  .then(function(servicos) {
+      res.json({
+          error: false,
+          servicos
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao exibir a quantidade de serviços."
+      });
+  });
+});
+
+app.get('/servicos/:id/pedidos', async(req, res) => {
+  if(!await servico.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Serviço não encontrado."
+      });
+  };
+
+  await servico.findByPk(
+      req.params.id, {include: [{all: true}]})
+  .then(serv => {
+      return res.json({
+          error: false,
+          serv
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao buscar o serviço."
+      });
+  });
+});
+
+pp.put('/servicos/:id/editar', async(req, res) => {
+  if(!await servico.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Serviço não encontrado."
+      });
+  };
+
+  const serv = {
+      nome: req.body.nome,
+      descricao: req.body.descricao
+  }
+
+  await servico.update(serv, {
+      where: {id: req.params.id}
+  }).then(function() {
+      return res.json({
+          error: false,
+          message: "Serviço alterado com sucesso!"
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao alterar o serviço."
+      });
+  });
+});
+
+app.get('/servicos/:id/excluir', async(req, res) => {
+  if(!await servico.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Serviço não encontrado."
+      });
+  };
+
+  await servico.destroy({
+      where: {id: req.params.id}
+  }).then(function() {
+      return res.json({
+          error: false,
+          message: "Serviço excluído com sucesso!"
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao excluir o serviço."
+      });
+  });
+});
+
+
+
+
+
 app.post('/pedidos', async (req, res) => {
   await pedido
     .create(req.body)
@@ -74,6 +343,110 @@ app.post('/pedidos', async (req, res) => {
         message: 'Foi impossível se conectar.',
       });
     });
+});
+
+
+app.post('/pedidos/cadastrar', async(req, res) => {
+  await pedido.create(
+      req.body
+  ).then(function() {
+      return res.json({
+          error: false,
+          message: "Pedido criado com sucesso!"
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao criar o pedido."
+      })
+  });
+});
+
+app.get('/pedidos/quantidade', async(req, res) => {
+  await pedido.count('id')
+  .then(function(pedidos) {
+      res.json({
+          error: false,
+          pedidos
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao exibir a quantidade de pedidos."
+      });
+  });
+});
+
+pp.get('/pedidos/:id', async(req, res) => {
+  if(!await pedido.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Pedido não encontrado."
+      });
+  };
+
+  await pedido.findByPk(req.params.id, {include: [{all: true}]})
+  .then(ped => {
+      return res.json({
+          error: false,
+          ped
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao buscar o pedido."
+      });
+  });
+});
+
+pp.put('/pedidos/:id/editar', async(req, res) => {
+  if(!await pedido.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Pedido não encontrado."
+      });
+  };
+
+  const ped = {
+      data: req.body.data
+  };
+
+  await pedido.update(ped, {
+      where: {id: req.params.id}
+  }).then(function() {
+      return res.json({
+          error: false,
+          message: "Pedido alterado com sucesso!"
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao alterar o pedido."
+      });
+  });
+});
+
+app.get('/pedidos/:id/excluir', async(req, res) => {
+  if(!await pedido.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Pedido não encontrado."
+      });
+  };
+
+  await pedido.destroy({
+      where: {id: req.params.id}
+  }).then(function() {
+      return res.json({
+          error: false,
+          message: "Pedido excluído com sucesso!"
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao excluir o pedido."
+      });
+  });
 });
 
 app.post('itenspedido', async (req, res) => {
@@ -92,6 +465,104 @@ app.post('itenspedido', async (req, res) => {
       });
     });
 });
+
+app.post('/itempedido/cadastrar', async(req, res) => {
+  await itempedido.create(
+      req.body
+  ).then(function() {
+      return res.json({
+          error: false,
+          message: "Item adicionado ao pedido com sucesso!"
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao adicionar o item ao pedido."
+      })
+  });
+});
+
+app.get('/itempedido/quantidade', async(req, res) => {
+  await itempedido.count('id')
+  .then(function(itens) {
+      res.json({
+          error: false,
+          itens
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao exibir a quantidade de itens."
+      });
+  });
+});
+
+app.put('/pedidos/:id/item/editar', async(req, res) => {
+  if(!await pedido.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Pedido não encontrado."
+      });
+  };
+
+  if(!await servico.findByPk(req.body.ServicoId)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Pedido não encontrado."
+      });
+  };
+
+  const item = {
+      quantidade: req.body.quantidade,
+      valor: req.body.valor
+  };
+
+  await itempedido.update(item, {
+      where: Sequelize.and(
+          {ServicoId: req.body.ServicoId},
+          {PedidoId: req.params.id}
+      )
+  }).then(function(itens) {
+      return res.json({
+          error: false,
+          message: "Pedido alterado com sucesso!",
+          itens
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao alterar pedido."
+      });
+  });
+});
+
+app.get('/pedidos/:id/item/excluir', async(req, res) => {
+  if(!await pedido.findByPk(req.params.id)) {
+      return res.status(400).json({
+          erro: true,
+          message: "Pedido não encontrado."
+      });
+  };
+
+  await itempedido.destroy({        
+      where: Sequelize.and({
+          ServicoId: req.body.ServicoId, 
+          PedidoId: req.params.id
+      })
+  }).then(function() {
+      return res.json({
+          error: false,
+          message: "Item excluído com sucesso!"
+      });
+  }).catch(function(erro) {
+      return res.status(400).json({
+          error: true,
+          message: "Erro ao excluir o item."
+      });
+  });
+});
+
+
 
 let port = process.env.PORT || 3001;
 
