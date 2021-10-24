@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 //vamos utilizar a models associada a const
 const models = require('./models');
+const { application } = require('express');
 
 const app = express();
 app.use(cors());
@@ -141,13 +142,32 @@ app.get('/servico/:id', async (req, res) => {
     });
 });
 
-app.get('/atualizaservico', async (req, res) => {
-  await servico.findByPK(2).then((serv) => {
-    serv.nome = 'HTML/CSS/JS';
-    serv.descricao = 'Páginas estáticas e dinâmicas estilizadas';
-    serv.save();
-    return res.json({ serv });
-  });
+// app.get('/atualizaservico', async (req, res) => {
+//   await servico.findByPK(2).then((serv) => {
+//     serv.nome = 'HTML/CSS/JS';
+//     serv.descricao = 'Páginas estáticas e dinâmicas estilizadas';
+//     serv.save();
+//     return res.json({ serv });
+//   });
+// });
+
+app.put('/atualizaservico', async (req, res) => {
+  await servico
+    .update(req.body, {
+      where: { id: req.body.id },
+    })
+    .then(function () {
+      return res.json({
+        error: false,
+        message: 'Serviço foi alterado com sucesso!',
+      });
+    })
+    .catch(function (erro) {
+      return res.status(400).json({
+        error: true,
+        message: 'Erro na alteração do serviço.',
+      });
+    });
 });
 
 //app está ouvindo a porta de requisicao e resposta
