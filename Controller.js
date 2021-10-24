@@ -117,14 +117,17 @@ app.get('/listaservicos', async (req, res) => {
     });
 });
 //retorna quantidade de id
+
 app.get('/ofertaservicos', async (req, res) => {
   await servico.count('id').then(function (servicos) {
     res.json({ servicos });
   });
 });
-
+// não funciona a partir daqui
 app.get('/servico/:id', async (req, res) => {
-  await servico.findByPK(req.params.id).then(serv => {
+  await servico
+    .findByPK(req.params.id)
+    .then((serv) => {
       return res.json({
         error: false,
         serv,
@@ -136,6 +139,15 @@ app.get('/servico/:id', async (req, res) => {
         message: 'Erro: código não encontrado!',
       });
     });
+});
+
+app.get('/atualizaservico', async (req, res) => {
+  await servico.findByPK(2).then((serv) => {
+    serv.nome = 'HTML/CSS/JS';
+    serv.descricao = 'Páginas estáticas e dinâmicas estilizadas';
+    serv.save();
+    return res.json({ serv });
+  });
 });
 
 //app está ouvindo a porta de requisicao e resposta
