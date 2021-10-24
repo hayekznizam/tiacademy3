@@ -9,8 +9,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // é a individualizacao do item, conversa com pedido e a servico
-      ItemPedido.belongsTo(models.Pedido);
-      ItemPedido.belongsTo(models.Servico);
+      ItemPedido.belongsTo(models.Pedido, {
+        foreignKey: 'PedidoId',
+        as: 'pedido',
+      });
+      ItemPedido.belongsTo(models.Servico, {
+        foreignKey: 'ServicoId',
+        as: 'servico',
+      });
     }
   }
   ItemPedido.init(

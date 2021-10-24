@@ -9,10 +9,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // um pedido tem um cliente pertence a um cliente o pedido
-      Pedido.belongsTo(models.Cliente);
+      Pedido.belongsTo(models.Cliente, {
+        foreignKey: 'ClienteId',
+        as: 'clientes',
+      });
       //servico pertence a classe item pedido
       Pedido.belongsToMany(models.Servico, {
+        foreignKey: 'ServicoId',
+
         through: 'ItemPedido',
+        as: 'servicos_ped',
+      });
+      Pedido.hasMany(models.ItemPedido, {
+        foreignKey: 'PedidoId',
+        as: 'item_pedido',
       });
     }
   }

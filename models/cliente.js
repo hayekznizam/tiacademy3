@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // associação entre cliente e pedido
-      Cliente.hasMany(models.Pedido);
+      Cliente.hasMany(models.Pedido,{foreignKey:'ClienteId',as:'pedidos'});
     }
   }
   Cliente.init(

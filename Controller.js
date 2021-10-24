@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 //vamos utilizar a models associada a const
+const { sequelize } = require('./models');
 const models = require('./models');
 const { application } = require('express');
 
@@ -169,6 +170,53 @@ app.put('/atualizaservico', async (req, res) => {
       });
     });
 });
+
+//método put fazendo a alteração
+app.put('/pedidos/:id/editaritem', async (req, res) => {
+  const item = {
+    quantidade: req.body.quantidade,
+    valor: req.body.valor,
+  };
+  if (!(await pedido.findByPK(req.params.id))) {
+    return res.status(400).json({
+      error: true,
+      message: 'Pedido não foi encontrado.',
+    });
+  }
+  if (!(await servico.findByPK(req.body.ServicoId))) {
+    return res.status(400).json({
+      error: true,
+      message: 'Servico não foi encontrado',
+    });
+  }
+  await itempedido.update(item, {
+    where: Sequelize.and(
+      { ServicoId: req.body.ServicoId },
+      { PedidoId: req.params.id },
+    ).then(function (itens) {
+      return res.json({
+        error: false,
+        message: 'Pedido foi alterado com sucesso',
+        itens,
+      });
+    }).catch(function(erro){
+      return res.status(400).json({
+        error:true,
+        message:"Não foi possível alterar."
+      });
+    })
+  });
+});
+
+//consulta mostrando todos os relacionamentos
+app.get('/pedidos/:id', async (req, res) => {
+  await pedido
+    .findByPK(req.params.id, { include: [{ all: true }] })
+    .then((ped) => {
+      return res.json({ ped });
+    });
+});
+//excluir cliente
 
 app.get('/excluircliente/:id', async (req, res) => {
   await cliente
