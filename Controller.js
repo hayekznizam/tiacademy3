@@ -170,6 +170,25 @@ app.put('/atualizaservico', async (req, res) => {
     });
 });
 
+app.get('/excluircliente/:id', async (req, res) => {
+  await cliente
+    .destroy({
+      where: { id: req.params.id },
+    })
+    .then(function () {
+      return res.json({
+        error: false,
+        message: 'Cliente excluído com sucesso.',
+      });
+    })
+    .catch((erro) => {
+      return res.status(400).json({
+        error: true,
+        message: 'Erro: impossível excluir cliente.',
+      });
+    });
+});
+
 //app está ouvindo a porta de requisicao e resposta
 //utilizando tambem uma arrow function e com msg na tela
 app.listen(port, (req, res) => {
