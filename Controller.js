@@ -401,7 +401,7 @@ app.get('/pedidos/quantidade', async (req, res) => {
     });
 });
 
-pp.get('/pedidos/:id', async (req, res) => {
+app.get('/pedidos/:id', async (req, res) => {
   if (!(await pedido.findByPk(req.params.id))) {
     return res.status(400).json({
       erro: true,
@@ -425,7 +425,7 @@ pp.get('/pedidos/:id', async (req, res) => {
     });
 });
 
-pp.put('/pedidos/:id/editar', async (req, res) => {
+app.put('/pedidos/:id/editar', async (req, res) => {
   if (!(await pedido.findByPk(req.params.id))) {
     return res.status(400).json({
       erro: true,
@@ -1070,6 +1070,24 @@ app.get('/servico/:id', async (req, res) => {
     });
 });
 
+app.get('/servico/:id/pedidos', async (req, res) => {
+  await itempedido
+    .findAll({
+      where: {ServicoId: req.params.id}})
+    .then(item => {
+      return res.json({
+        error: false,
+        item,
+      });
+    })
+    .catch(function (erro) {
+      return res.status(400).json({
+        error: true,
+        message: 'Erro: código não encontrado!',
+      });
+    });
+});
+
 // app.get('/atualizaservico', async (req, res) => {
 //   await servico.findByPK(2).then((serv) => {
 //     serv.nome = 'HTML/CSS/JS';
@@ -1164,7 +1182,6 @@ app.get('/pedidos/:id', async (req, res) => {
       return res.json({ ped });
     });
 });
-//excluir cliente
 
 //app está ouvindo a porta de requisicao e resposta
 //utilizando tambem uma arrow function e com msg na tela
